@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en"  >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    {% block addcss %}{% endblock %}
+    
+    
+    <link rel="stylesheet" type="text/css" href=" {% static 'blog_app/main.css' %} " > 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+</head>
+<body style="background-image: url('https://lesilets.com/wp-content/uploads/2018/04/1096907-cool-dark-background-2560x1600-for-tablet.jpg') ; background-repeat: no-repeat; background-size: cover; background-attachment: fixed;  " >
+
+    <!--linear-gradient(10deg, #071a3e, #474439, #331980, #113930)-->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand font-weight-bold font-italic" href="{% url 'home' %}"> Home Page </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="nav navbar-nav ml-auto">
+            
+            
+
+            {% if user.is_authenticated  %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'add_post' %}">Add Post</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link text-danger font-weight-bolder" href="{% url 'logout' %}"> Logout </a>
+              </li>
+            {% else %}
+              <li class="nav-item active">
+                <a class="nav-link text-light font-weight-bolder" href="{% url 'login' %}"> Sign in </a>
+              </li>
+              
+              <li class="nav-item active">
+                <a class="nav-link text-info font-weight-bolder" href="{% url 'register' %}"> Sign up </a>
+              </li>
+              
+
+            {% endif %}
+            
+            
+
+          </ul>
+          
+        </div>
+    </nav>
+
+    
+    {% block content %}{% endblock content %}  
+
+
+    {% if is_paginated %}
+      <ul class="nav justify-content-center">
+
+          {% if page_obj.has_previous %}
+              <li class="nav-item"> 
+                  <a class="btn btn-outline-light btn-sm ml-2"  href="?page=1">&laquo; first</a>
+                  <a class="btn btn-primary btn-sm ml-2" href="?page={{ page_obj.previous_page_number }}">previous</a>
+              </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+              
+              {% if page_obj.number == num %}
+                  <a class="btn btn-primary ml-2 btn-sm" href="?page={{ num }}">{{ num }}</a>
+              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                  <a class="btn btn-outline-primary ml-2 btn-sm" href="?page={{ num }}">{{ num }}</a>
+              {% endif %}
+              
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+              <li class="nav-item">
+                      <a class="btn btn-primary btn-sm ml-2" href="?page={{ page_obj.next_page_number }}">next</a>
+                      <a class="btn btn-outline-light btn-sm ml-2" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+              </li>
+          {% endif %}
+      </ul>
+
+      <ul class="nav justify-content-center mt-2">
+          <li class="nav-item">
+              <p class="text-light"> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}. </p>
+          </li>
+      </ul>
+    {% endif %}
+
+    <br>
+    <br>
+    <br>
+
+    {% block addjs %} {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    
+    <!--  <script src="{% static 'blog_app/main.js' %}"></script>  -->
+</body>
+</html>

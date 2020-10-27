@@ -1,0 +1,180 @@
+{% extends 'blog_app/base.html' %}
+{% load tz %}
+
+{% block addcss %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+    
+
+    .sidenav {
+    font-family: "Lato", sans-serif;
+    width: 190px;
+    float: left;
+    background-color: #111;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+    margin-top: 10%;
+
+    }
+
+    .sidenav a#linka , .dropdown-btn {
+    font-family: "Lato", sans-serif;
+    padding: 6px 8px 6px 6px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    outline: none !important ;
+
+    }
+
+
+
+    .sidenav a#linka:hover, .dropdown-btn:hover {
+        color: #f1f1f1;
+    }
+
+    .dropinner a#linka{
+    background-color: silver;
+    color:#111;
+    margin-top: 5px;
+    border-radius: 10px;
+    width: 11rem;
+    margin-left: 7px;
+    text-align: center;
+    animation: animateDrop 300ms ease-in-out forwards;
+    display: none;
+    height: 27px;
+    padding-top: 0;
+    }
+    
+    @keyframes animateDrop{
+        0% {
+        transform: scaleY(0)
+        }
+        80% {
+        transform: scaleY(1.1)
+        }
+        100% {
+        transform: scaleY(1)
+        }
+    }
+
+    .show a#linka{
+    display: block;
+    }
+
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+
+
+
+    <div class="sidenav" >
+
+        <button class="dropdown-btn">Category 
+            <i id="arrow" class="fa fa-caret-right"></i>
+        </button>
+
+        <div class="dropinner">
+            
+            {% for cat in category_list %}
+                <a id="linka" href="{% url 'category' cat.name %}" >{{cat.name}}</a>    
+            {% endfor %}
+                
+        </div>
+    </div>
+
+
+
+
+<div class="container">
+    <h1 class="text-center text-white">Content</h1>
+
+
+
+
+    <div class="row row-cols-1 row-cols-md-2 ">
+
+    {% for post in object_list %}
+        <div class="col mb-4">
+            <div class="card text-white bg-dark h-100 mb-3" id="mycard" style="max-width: 28rem; ">
+                
+                <div class="card-header">
+                    <a class="text-light text-decoration-none" href="{% url 'post_detail' post.pk %}" ><h3 class="text-center">{{ post.title }}</h3></a>
+                    <small>Category: <a class="text-warning" href="{% url 'category' post.category %}">{{ post.category }}</a> </small>
+                    <small class="float-right" > Dislike: {{ post.get_unlikes }}  Like: {{ post.get_likes }} </small>
+                </div>
+                
+                <div class="card-body">
+                    <h5 class="card-title text-center text-primary">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                        </svg>
+                        <a class="text-primary" href=" {% url 'profile_detail' post.author.username %} " >{{ post.author }}</a>
+                    </h5>
+
+                    <p class="card-text text-center "> {{ post.body|safe|truncatechars:80 }} </p>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <p class="card-text ml-3"><small class="text-muted">{{ post.date_time|timezone:"Asia/Baku"|date:"d M Y"}} at {{ post.date_time|timezone:"Asia/Baku"|date:"H:i" }}</small></p>
+                    
+                    
+                    {% if user.id == post.author.id %}
+                        <div >
+                            <a href="{% url 'update_post' post.pk %}" class="btn btn-sm btn-outline-light mr-2 mb-2" > Edit </a>
+                            <a href="{% url 'delete_post' post.pk %}" class="btn btn-sm btn-outline-danger mr-4 mb-2" > Delete </a>
+                        </div>
+                    {% endif %}
+                        
+                    
+                </div>
+                
+            </div>
+        </div>
+    {% endfor %}
+
+    </div>
+
+
+</div>        
+
+{% endblock content %}
+    
+
+{% block addjs %}
+
+<script>
+    document.getElementsByClassName('dropdown-btn')[0].addEventListener('click',show);
+    
+    function show(){
+
+        var drop = document.getElementsByClassName('dropinner')[0];
+
+        var fa = document.getElementById('arrow');
+
+        if (drop.className == 'dropinner'){
+            drop.className += ' show';
+            fa.className = fa.className.replace('right','down');
+        }else{
+          drop.className = 'dropinner';
+          fa.className = fa.className.replace('down','right');
+        }
+    }
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,11 @@
+
+
+
+label[for ='id_title' ],
+label[for = 'id_author'],
+label[for = 'id_body' ],
+label[for = 'id_category' ]{
+    color: floralwhite;
+}
+
+
